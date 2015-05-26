@@ -4,6 +4,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import com.bileschi.blockinspector.parse.Indentation;
+import com.bileschi.blockinspector.parse.Tree;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -12,6 +17,23 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTextView();
+    }
+
+    private void setTextView() {
+        TextView myAwesomeTextView = (TextView)findViewById(R.id.code_block);
+
+        myAwesomeTextView.setText(
+                "first block thing\n" +
+                "\tinside block\n" +
+                "end of first block");
+    }
+
+    public void setClickHandler(View v) {
+        TextView myAwesomeTextView = (TextView)findViewById(R.id.code_block);
+
+        Tree<String> parsedText = Indentation.parseText(myAwesomeTextView.getText().toString());
+        myAwesomeTextView.setText(Indentation.firstMemberOfBlock(parsedText));
     }
 
 

@@ -47,4 +47,9 @@ public class Indentation {
         return count;
     }
 
+    public static String firstMemberOfBlock(Tree<String> t) {
+        // worry about empty entries
+        return t.children.get(0).data;
+    }
+
 }
