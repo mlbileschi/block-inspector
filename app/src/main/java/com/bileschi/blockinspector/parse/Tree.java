@@ -9,6 +9,8 @@ public class Tree<T> {
     public T data;
     public Tree<T> parent;
     public List<Tree<T>> children;
+    public boolean collapsed = false;
+
 
     public boolean isRoot() {
         return parent == null;
@@ -61,8 +63,9 @@ public class Tree<T> {
     @Override
     public String toString() {
         return "Tree{" +
-                "children=" + children +
-                ", data=" + data +
+                "data=" + data +
+                ", collapsed=" + collapsed +
+                ", children=" + children +
                 '}';
     }
 

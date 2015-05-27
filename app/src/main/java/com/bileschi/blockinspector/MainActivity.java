@@ -2,16 +2,21 @@ package com.bileschi.blockinspector;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bileschi.blockinspector.parse.Indentation;
 import com.bileschi.blockinspector.parse.Tree;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ViewUpdater {
+    CodeView codeView;
+    ViewGroup linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,20 +25,24 @@ public class MainActivity extends ActionBarActivity {
         setTextView();
     }
 
-    private void setTextView() {
-        TextView myAwesomeTextView = (TextView)findViewById(R.id.code_block);
-
-        myAwesomeTextView.setText(
-                "first block thing\n" +
+    public void setTextView() {
+        String s = "first block thing\n" +
                 "\tinside block\n" +
-                "end of first block");
-    }
+                "end of first block";
 
-    public void setClickHandler(View v) {
-        TextView myAwesomeTextView = (TextView)findViewById(R.id.code_block);
+        CodeView codeView = new CodeView(Indentation.parseText(s), this);
+        ViewGroup layout = codeView.render();
 
-        Tree<String> parsedText = Indentation.parseText(myAwesomeTextView.getText().toString());
-        myAwesomeTextView.setText(Indentation.firstMemberOfBlock(parsedText));
+        final LinearLayout outer = (LinearLayout) findViewById(R.id.code_block);
+        this.linearLayout = outer;
+        this.codeView = codeView;
+        outer.addView(layout);
+        outer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                outer.postInvalidate();
+            }
+        });
     }
 
 
@@ -57,5 +66,13 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setView(View view) {
+        final LinearLayout outer = (LinearLayout) findViewById(R.id.code_block);
+
+        outer.removeAllViews();
+        outer.addView(view);
     }
 }
