@@ -1,6 +1,5 @@
 package com.bileschi.blockinspector;
 
-import android.graphics.Color;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -13,6 +12,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 public class CodeView {
 
+    public static final float TEXT_SIZE = 40F;
     final Tree<String> codeTree;
     final MainActivity context;
 
@@ -22,12 +22,17 @@ public class CodeView {
     }
 
 
-    public ViewGroup render() {
-        ViewGroup toReturn = renderHelper(codeTree);
+    public View render() {
         if(codeTree.collapsed) {
-            toReturn.setBackgroundColor(Color.BLACK);
+            TextView t = new TextView(context);
+            t.setText(codeTree.data);
+            t.setTextSize(TEXT_SIZE);
+            t.setOnClickListener(onClickListener(codeTree.data));
+            t.setBackgroundColor(context.getResources().getColor(R.color.code_block));
+            return t;
+        } else {
+            return renderHelper(codeTree);
         }
-        return toReturn;
     }
 
     // consider consolidating logic here so it's not duplicated
@@ -37,29 +42,37 @@ public class CodeView {
         layout.setOrientation(LinearLayout.VERTICAL);
 
         final TextView textView = new TextView(context);
-        textView.setTextSize(40F);
+        textView.setTextSize(TEXT_SIZE);
 
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UpdateViewTask asyncTask = new UpdateViewTask(CodeView.this.context);
-                asyncTask.execute(new Pair<>(CodeView.this, textView));
-            }
-        });
+        textView.setOnClickListener(onClickListener(codeSubTree.data));
 
         textView.setText(codeSubTree.data);
         layout.addView(textView);
 
         for (Tree<String> child : codeSubTree.children) {
             if(child.collapsed) {
-                View v = renderHelper(child);
-                v.setBackgroundColor(Color.BLACK);
-                layout.addView(v);
+                TextView t = new TextView(context);
+                t.setText(child.data);
+                t.setTextSize(TEXT_SIZE);
+                t.setOnClickListener(onClickListener(child.data));
+                t.setBackgroundColor(context.getResources().getColor(R.color.code_block));
+                layout.addView(t);
             } else {
                 layout.addView(renderHelper(child));
             }
         }
 
         return layout;
+    }
+
+    View.OnClickListener onClickListener(final String s) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("in here", s);
+                UpdateViewTask asyncTask = new UpdateViewTask(CodeView.this.context);
+                asyncTask.execute(new Pair<>(CodeView.this, s));
+            }
+        };
     }
 }

@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.bileschi.blockinspector.parse.Tree;
 
-public class UpdateViewTask extends AsyncTask<Pair<CodeView, TextView>, Void, View> {
+public class UpdateViewTask extends AsyncTask<Pair<CodeView, String>, Void, View> {
     final ViewUpdater viewUpdater;
 
     public UpdateViewTask(ViewUpdater viewUpdater) {
@@ -15,10 +15,9 @@ public class UpdateViewTask extends AsyncTask<Pair<CodeView, TextView>, Void, Vi
     }
 
     @Override
-    protected View doInBackground(Pair<CodeView, TextView>... params) {
+    protected View doInBackground(Pair<CodeView, String>... params) {
         CodeView codeView = params[0].first;
-        TextView textView = params[0].second;
-        Tree<String> node = codeView.codeTree.findTreeNode(textView.getText().toString());
+        Tree<String> node = codeView.codeTree.findTreeNode(params[0].second);
         node.collapsed = !node.collapsed;
 
         return codeView.render();

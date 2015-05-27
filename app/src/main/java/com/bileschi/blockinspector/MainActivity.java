@@ -31,7 +31,7 @@ public class MainActivity extends ActionBarActivity implements ViewUpdater {
                 "end of first block";
 
         CodeView codeView = new CodeView(Indentation.parseText(s), this);
-        ViewGroup layout = codeView.render();
+        View layout = codeView.render();
 
         final LinearLayout outer = (LinearLayout) findViewById(R.id.code_block);
         this.linearLayout = outer;
