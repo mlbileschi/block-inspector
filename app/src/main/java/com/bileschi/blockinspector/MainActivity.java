@@ -26,9 +26,11 @@ public class MainActivity extends ActionBarActivity implements ViewUpdater {
     }
 
     public void setTextView() {
-        String s = "first block thing\n" +
-                "\tinside block\n" +
-                "end of first block";
+        String s = "public class HelloWorld {\n" +
+                "\tpublic static void main(String[] args) {\n" +
+                "\t\tSystem.out.println(\"Hello, World\");\n" +
+                "\t}\n" +
+                "}";
 
         CodeView codeView = new CodeView(Indentation.parseText(s), this);
         View layout = codeView.render();
