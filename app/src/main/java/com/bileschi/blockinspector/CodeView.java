@@ -12,7 +12,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 public class CodeView {
 
-    public static final float TEXT_SIZE = 40F;
+    public static final float TEXT_SIZE = 15F;
     final Tree<String> codeTree;
     final MainActivity context;
 

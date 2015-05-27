@@ -10,8 +10,7 @@ public class Indentation {
         return parseTextHelper(code.split("\n"), new Tree("code root"));
     }
 
-    // worry about spaces as tabs
-    // worry about empty newlines
+    // Figure out a way to make this method prettier. What can we factor out?
     private static Tree<String> parseTextHelper(String[] codeLines, Tree<String> tree) {
         if(codeLines.length == 0) {
             return tree;
@@ -24,16 +23,22 @@ public class Indentation {
             return tree;
         }
 
+        // need to be able to handle newlines in here
+
         int numTabsTopLine = tabsAtFront(codeLines[0]);
         int numTabsSecondLine = tabsAtFront(codeLines[1]);
 
-        // instead of a simple lt, gt here, we need to pop off the appropriate number of times (difference in tabs of non-1)
         if (numTabsSecondLine > numTabsTopLine) {
             parseTextHelper(Arrays.copyOfRange(codeLines, 1, codeLines.length), tree.findTreeNode(curLine));
-        } else if (numTabsSecondLine < numTabsTopLine) {
-            parseTextHelper(Arrays.copyOfRange(codeLines, 1, codeLines.length), tree.parent);
-        } else {
+        } else if (numTabsSecondLine == numTabsTopLine) {
             parseTextHelper(Arrays.copyOfRange(codeLines, 1, codeLines.length), tree);
+        } else {
+            int amountToUnindent = numTabsTopLine - numTabsSecondLine;
+            Tree<String> newRoot = tree;
+            for (int i = 0; i < amountToUnindent; i++) {
+                newRoot = newRoot.parent;
+            }
+            parseTextHelper(Arrays.copyOfRange(codeLines, 1, codeLines.length), newRoot);
         }
 
         return tree;
@@ -46,10 +51,4 @@ public class Indentation {
         }
         return count;
     }
-
-    public static String firstMemberOfBlock(Tree<String> t) {
-        // worry about empty entries
-        return t.children.get(0).data;
-    }
-
 }
